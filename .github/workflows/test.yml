@@ -1,0 +1,154 @@
+name: test-action
+on:
+  issues:
+    types:
+      - opened
+
+env:
+  GH_TOKEN: ${{ secrets.TEST_TOKEN }}
+  ORGANIZATION: tykiyoshima
+  REPOSITORY: gh-project-test
+  PROJECT_NUMBER: 1
+
+permissions:
+  issues: write
+
+jobs:
+  search-sprint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: search sprint
+        run: |
+          gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectV2(number: $number) {
+                  id
+                  items(first: 1, orderBy: {field: POSITION, direction: DESC}) {
+                    nodes {
+                      ... on ProjectV2Item {
+                        id
+                        type
+                        fieldValues(first: 20) {
+                          nodes {
+                            ... on ProjectV2ItemFieldIterationValue {
+                              duration
+                              field {
+                                ... on ProjectV2IterationField {
+                                  name
+                                }
+                              }
+                              startDate
+                              title
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
+
+            echo 'TARGET_SPRINT_DURATION='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="Testfield").duration' project_data.json) >> $GITHUB_ENV
+            echo 'TARGET_SPRINT_STARTDATE='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="Testfield").startDate' project_data.json) >> $GITHUB_ENV
+            echo 'TARGET_SPRINT_TITLE='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="Testfield").title' project_data.json) >> $GITHUB_ENV
+
+          gh api graphql -f query='
+            query($org: String!, $repo: String!) {
+              repository(owner: $org, name: $repo) {
+                issues(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
+                  nodes {
+                    id
+                    title
+                    milestone {
+                      id
+                      title
+                    }
+                  }
+                }
+              }
+            }' -f org=$ORGANIZATION -f repo=$REPOSITORY > issue_data.json
+
+            echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV
+      
+      - name: set IS_MILESTONED
+        run: |
+          gh api graphql -f query='
+          query($org: String!, $repo: String!) {
+            repository(owner: $org, name: $repo) {
+              milestones(first: 20) {
+                nodes {
+                  id
+                  title
+                }
+              }
+            }
+          }' -f org=$ORGANIZATION -f repo=$REPOSITORY > milestone_data.json
+          echo $MILESTONE
+          MILESTONE=$(jq '.data.repository.milestones.nodes[] | select(.title==${{env.TARGET_SPRINT_TITLE}}) | .id' milestone_data.json)
+          echo $MILESTONE
+          if [ -n "$MILESTONE" ]; then
+            echo 'IS_MILESTONED=true' >> $GITHUB_ENV
+          else
+            echo 'IS_MILESTONED=false' >> $GITHUB_ENV
+          fi
+
+      - name: set MILESTONE_DUE_ON
+        run: |
+          echo 'MILESTONE_DUE_ON='$(jq -n '${{ env.TARGET_SPRINT_STARTDATE}} | strptime("%Y-%m-%d") | .[2] |= .+${{env.TARGET_SPRINT_DURATION}} | mktime | strftime("%Y-%m-%d")') >> $GITHUB_ENV
+      
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            if (${{env.IS_MILESTONED}}) {
+              return
+            }
+            const dueOn = new Date(${{env.MILESTONE_DUE_ON}}).toISOString()
+            const data = await github.rest.issues.createMilestone({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: ${{env.TARGET_SPRINT_TITLE}},
+              due_on: dueOn
+            })
+
+      - name: set TARGET_MILESTONE_ID
+        run: |
+          gh api graphql -f query='
+          query($org: String!, $repo: String!) {
+            repository(owner: $org, name: $repo) {
+              milestones(first: 20) {
+                nodes {
+                  id
+                  title
+                  dueOn
+                }
+              }
+            }
+          }' -f org=$ORGANIZATION -f repo=$REPOSITORY > milestone_data.json
+
+          echo 'TARGET_MILESTONE_ID='$(jq '.data.repository.milestones.nodes[] | select(.title==${{env.TARGET_SPRINT_TITLE}}) | .id' milestone_data.json) >> $GITHUB_ENV
+      
+      - name: set-milestone
+        run: |
+          gh api graphql -f query='
+          mutation (
+            $item: ID!
+            $milestone_id: ID!
+          ) {
+            set_milestone: updateIssue(
+              input: {
+                id: $item
+                milestoneId: $milestone_id
+              }
+            ) {
+              issue {
+                id
+                milestone {
+                  id
+                  title
+                }
+              }
+            }
+          }' -f item=$TARGET_ISSUE_ID -f milestone_id=$TARGET_MILESTONE_ID
