@@ -4,15 +4,24 @@ on:
     types:
       - opened
 
-env:
-  ORGANIZATION: hikaru-kadota-testorg
-  REPOSITORY: gh-project-test
-  PROJECT_NUMBER: 1
-
 jobs:
   search-sprint:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PEM }}
+
+      - name: Get project data
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          ORGANIZATION: hikaru-kadota-testorg
+          PROJECT_NUMBER: 1
+          REPOSITORY: gh-project-test
+
       - name: search sprint
         run: |
           gh api graphql -f query='
