@@ -5,8 +5,8 @@ on:
       - opened
 
 env:
-  GH_TOKEN: ${{ secrets.TEST_TOKEN }}
-  ORGANIZATION: tykiyoshima
+  GH_TOKEN: ${{ secrets.MY_SECRET }}
+  ORGANIZATION: hikaru-kadota-testorg
   REPOSITORY: gh-project-test
   PROJECT_NUMBER: 1
 
@@ -51,9 +51,9 @@ jobs:
 
             }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
 
-            echo 'TARGET_SPRINT_DURATION='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="Testfield").duration' project_data.json) >> $GITHUB_ENV
-            echo 'TARGET_SPRINT_STARTDATE='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="Testfield").startDate' project_data.json) >> $GITHUB_ENV
-            echo 'TARGET_SPRINT_TITLE='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="Testfield").title' project_data.json) >> $GITHUB_ENV
+            echo 'TARGET_SPRINT_DURATION='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="sprint").duration' project_data.json) >> $GITHUB_ENV
+            echo 'TARGET_SPRINT_STARTDATE='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="sprint").startDate' project_data.json) >> $GITHUB_ENV
+            echo 'TARGET_SPRINT_TITLE='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="sprint").title' project_data.json) >> $GITHUB_ENV
 
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
