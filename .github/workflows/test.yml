@@ -10,9 +10,6 @@ env:
   REPOSITORY: gh-project-test
   PROJECT_NUMBER: 1
 
-permissions:
-  issues: write
-
 jobs:
   search-sprint:
     runs-on: ubuntu-latest
@@ -86,9 +83,7 @@ jobs:
               }
             }
           }' -f org=$ORGANIZATION -f repo=$REPOSITORY > milestone_data.json
-          echo $MILESTONE
           MILESTONE=$(jq '.data.repository.milestones.nodes[] | select(.title==${{env.TARGET_SPRINT_TITLE}}) | .id' milestone_data.json)
-          echo $MILESTONE
           if [ -n "$MILESTONE" ]; then
             echo 'IS_MILESTONED=true' >> $GITHUB_ENV
           else
