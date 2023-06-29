@@ -5,7 +5,6 @@ on:
       - opened
 
 env:
-  GH_TOKEN: ${{ secrets.MY_SECRET }}
   ORGANIZATION: hikaru-kadota-testorg
   REPOSITORY: gh-project-test
   PROJECT_NUMBER: 1
