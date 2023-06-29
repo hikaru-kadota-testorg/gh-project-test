@@ -21,6 +21,8 @@ jobs:
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
 
+        echo ${{env.GITHUB_TOKEN}}
+
       - name: search sprint
         run: |
           gh api graphql -f query='
