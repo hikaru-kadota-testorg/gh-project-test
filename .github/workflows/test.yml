@@ -22,9 +22,6 @@ jobs:
 
       - name: search sprint
         run: |
-          echo ${{ steps.generate_token.outputs.token }}
-          echo '${{env.ORGANIZATION}}'
-
           gh api graphql -f query='
             query($org: String!, $number: Int!) {
               organization(login: $org){
