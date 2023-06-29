@@ -14,7 +14,6 @@ jobs:
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PEM }}
-
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
