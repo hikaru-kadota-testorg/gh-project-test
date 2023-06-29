@@ -14,15 +14,14 @@ jobs:
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PEM }}
-          
-      - name: Get project data
+
+      - name: search sprint
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
-
-      - name: search sprint
+          
         run: |
           gh api graphql -f query='
             query($org: String!, $number: Int!) {
