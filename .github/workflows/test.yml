@@ -22,6 +22,8 @@ jobs:
 
       - name: search sprint
         run: |
+          echo ${{env.GITHUB_TOKEN}}
+
           gh api graphql -f query='
             query($org: String!, $number: Int!) {
               organization(login: $org){
