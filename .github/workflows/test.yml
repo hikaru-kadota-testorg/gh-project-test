@@ -15,7 +15,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PEM }}
         env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
