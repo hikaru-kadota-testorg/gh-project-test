@@ -22,7 +22,7 @@ jobs:
 
       - name: search sprint
         run: |
-          echo $GITHUB_TOKEN
+          echo ${{ steps.generate_token.outputs.token }}
           echo '${{env.ORGANIZATION}}'
 
           gh api graphql -f query='
