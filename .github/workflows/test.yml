@@ -78,6 +78,12 @@ jobs:
             echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV
       
       - name: set IS_MILESTONED
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          ORGANIZATION: hikaru-kadota-testorg
+          PROJECT_NUMBER: 1
+          REPOSITORY: gh-project-test
+
         run: |
           gh api graphql -f query='
           query($org: String!, $repo: String!) {
@@ -98,6 +104,12 @@ jobs:
           fi
 
       - name: set MILESTONE_DUE_ON
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          ORGANIZATION: hikaru-kadota-testorg
+          PROJECT_NUMBER: 1
+          REPOSITORY: gh-project-test
+
         run: |
           echo 'MILESTONE_DUE_ON='$(jq -n '${{ env.TARGET_SPRINT_STARTDATE}} | strptime("%Y-%m-%d") | .[2] |= .+${{env.TARGET_SPRINT_DURATION}} | mktime | strftime("%Y-%m-%d")') >> $GITHUB_ENV
       
@@ -116,6 +128,12 @@ jobs:
             })
 
       - name: set TARGET_MILESTONE_ID
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          ORGANIZATION: hikaru-kadota-testorg
+          PROJECT_NUMBER: 1
+          REPOSITORY: gh-project-test
+
         run: |
           gh api graphql -f query='
           query($org: String!, $repo: String!) {
@@ -133,6 +151,12 @@ jobs:
           echo 'TARGET_MILESTONE_ID='$(jq '.data.repository.milestones.nodes[] | select(.title==${{env.TARGET_SPRINT_TITLE}}) | .id' milestone_data.json) >> $GITHUB_ENV
       
       - name: set-milestone
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          ORGANIZATION: hikaru-kadota-testorg
+          PROJECT_NUMBER: 1
+          REPOSITORY: gh-project-test
+          
         run: |
           gh api graphql -f query='
           mutation (
