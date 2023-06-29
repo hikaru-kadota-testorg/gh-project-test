@@ -18,10 +18,11 @@ jobs:
       - name: search sprint
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ORGANIZATION: hikaru-kadota-testorg
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
-          
+
         run: |
           gh api graphql -f query='
             query($org: String!, $number: Int!) {
