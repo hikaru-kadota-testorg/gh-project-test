@@ -52,13 +52,10 @@ jobs:
                   }
                 }
               }
-
             }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
-
             echo 'TARGET_SPRINT_DURATION='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="sprint").duration' project_data.json) >> $GITHUB_ENV
             echo 'TARGET_SPRINT_STARTDATE='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="sprint").startDate' project_data.json) >> $GITHUB_ENV
             echo 'TARGET_SPRINT_TITLE='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="sprint").title' project_data.json) >> $GITHUB_ENV
-
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
               repository(owner: $org, name: $repo) {
@@ -74,24 +71,15 @@ jobs:
                 }
               }
             }' -f org=$ORGANIZATION -f repo=$REPOSITORY > issue_data.json
-
-            echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV            
+            echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV
       
-          scripts:
-          - name: Check TARGET_SPRINT_TITLE variable
-            run: |
-              if [ -z "$TARGET_SPRINT_TITLE" ]; then
-                echo "変数 TARGET_SPRINT_TITLE がセットされていません。ワークフローを終了します。"
-                exit 1
-              fi
-     
       - name: set IS_MILESTONED
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
-          
+
         run: |
           gh api graphql -f query='
           query($org: String!, $repo: String!) {
@@ -110,7 +98,6 @@ jobs:
           else
             echo 'IS_MILESTONED=false' >> $GITHUB_ENV
           fi
-
       - name: set MILESTONE_DUE_ON
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
@@ -134,7 +121,6 @@ jobs:
               title: ${{env.TARGET_SPRINT_TITLE}},
               due_on: dueOn
             })
-
       - name: set TARGET_MILESTONE_ID
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
@@ -155,7 +141,6 @@ jobs:
               }
             }
           }' -f org=$ORGANIZATION -f repo=$REPOSITORY > milestone_data.json
-
           echo 'TARGET_MILESTONE_ID='$(jq '.data.repository.milestones.nodes[] | select(.title==${{env.TARGET_SPRINT_TITLE}}) | .id' milestone_data.json) >> $GITHUB_ENV
       
       - name: set-milestone
