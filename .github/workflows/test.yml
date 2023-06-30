@@ -83,10 +83,11 @@ jobs:
           ORGANIZATION: hikaru-kadota-testorg
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
-
+          
+          TARGET_SPRINT_TITLE: ${{ env.TARGET_SPRINT_TITLE }}
         run: |
-          if [ -z '{{ env.TARGET_SPRINT_TITLE }}' ]; then
-            return
+          if [ -z $TARGET_SPRINT_TITLE ]; then
+            echo "hoge"
           fi
           gh api graphql -f query='
           query($org: String!, $repo: String!) {
