@@ -85,7 +85,7 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          if [ -z "{{ env.TARGET_SPRINT_TITLE }}" ]; then
+          if [ -z '{{ env.TARGET_SPRINT_TITLE }}' ]; then
             return
           fi
           gh api graphql -f query='
