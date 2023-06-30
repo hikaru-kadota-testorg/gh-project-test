@@ -75,8 +75,14 @@ jobs:
               }
             }' -f org=$ORGANIZATION -f repo=$REPOSITORY > issue_data.json
 
-            echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV
-      
+            echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV            
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            if [ -z $TARGET_SPRINT_TITLE ]; then
+              success()
+            fi
+     
       - name: set IS_MILESTONED
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
@@ -84,9 +90,7 @@ jobs:
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
           
-          TARGET_SPRINT_TITLE: ${{ env.TARGET_SPRINT_TITLE }}
         run: |
-          
           gh api graphql -f query='
           query($org: String!, $repo: String!) {
             repository(owner: $org, name: $repo) {
@@ -104,14 +108,6 @@ jobs:
           else
             echo 'IS_MILESTONED=false' >> $GITHUB_ENV
           fi
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            if [ -z $TARGET_SPRINT_TITLE ]; then
-              return
-            fi
-
-
 
       - name: set MILESTONE_DUE_ON
         env:
