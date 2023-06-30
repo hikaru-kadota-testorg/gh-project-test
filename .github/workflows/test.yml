@@ -79,9 +79,11 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            if(!$TARGET_SPRINT_TITLE) {
+            echo $TARGET_SPRINT_TITLE
+            if [[ -z "$TARGET_SPRINT_TITLE" ]]; then
+              echo "変数 TARGET_SPRINT_TITLE がセットされていません。ワークフローを終了します。"
               exit 1
-            }
+            fi
      
       - name: set IS_MILESTONED
         env:
