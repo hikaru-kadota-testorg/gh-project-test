@@ -85,7 +85,9 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          echo -z ${{ env.TARGET_SPRINT_TITLE }}
+          if [ -z "{{ env.TARGET_SPRINT_TITLE }}" ]; then
+            echo "Zero"
+          fi
           gh api graphql -f query='
           query($org: String!, $repo: String!) {
             repository(owner: $org, name: $repo) {
