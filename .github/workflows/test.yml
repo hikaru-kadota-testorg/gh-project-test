@@ -86,7 +86,7 @@ jobs:
 
         run: |
           if [ -z "{{ env.TARGET_SPRINT_TITLE }}" ]; then
-            echo "Zero"
+            return
           fi
           gh api graphql -f query='
           query($org: String!, $repo: String!) {
