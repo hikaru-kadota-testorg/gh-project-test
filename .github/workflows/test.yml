@@ -76,6 +76,8 @@ jobs:
             }' -f org=$ORGANIZATION -f repo=$REPOSITORY > issue_data.json
 
             echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV            
+      
+      - name: check sprint title
       - uses: actions/github-script@v6
         with:
           script: |
