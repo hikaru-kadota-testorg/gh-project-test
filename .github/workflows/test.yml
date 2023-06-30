@@ -79,9 +79,9 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            if [[ -z $TARGET_SPRINT_TITLE ]]; then
+            if(!$TARGET_SPRINT_TITLE) {
               exit 1
-            fi
+            }
      
       - name: set IS_MILESTONED
         env:
