@@ -86,9 +86,7 @@ jobs:
           
           TARGET_SPRINT_TITLE: ${{ env.TARGET_SPRINT_TITLE }}
         run: |
-          if [ -z $TARGET_SPRINT_TITLE ]; then
-            return
-          fi
+          
           gh api graphql -f query='
           query($org: String!, $repo: String!) {
             repository(owner: $org, name: $repo) {
@@ -106,6 +104,14 @@ jobs:
           else
             echo 'IS_MILESTONED=false' >> $GITHUB_ENV
           fi
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            if [ -z $TARGET_SPRINT_TITLE ]; then
+              return
+            fi
+
+
 
       - name: set MILESTONE_DUE_ON
         env:
