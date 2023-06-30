@@ -85,7 +85,7 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          echo ${{ env.TARGET_SPRINT_TITLE }}
+          echo -z ${{ env.TARGET_SPRINT_TITLE }}
           gh api graphql -f query='
           query($org: String!, $repo: String!) {
             repository(owner: $org, name: $repo) {
