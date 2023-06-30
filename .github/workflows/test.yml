@@ -77,12 +77,13 @@ jobs:
 
             echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV            
       
-      - name: Check TARGET_SPRINT_TITLE variable
-        run: |
-          if [ -z "$TARGET_SPRINT_TITLE" ]; then
-            echo "変数 TARGET_SPRINT_TITLE がセットされていません。ワークフローを終了します。"
-            exit 1
-          fi
+          scripts:
+          - name: Check TARGET_SPRINT_TITLE variable
+            run: |
+              if [ -z "$TARGET_SPRINT_TITLE" ]; then
+                echo "変数 TARGET_SPRINT_TITLE がセットされていません。ワークフローを終了します。"
+                exit 1
+              fi
      
       - name: set IS_MILESTONED
         env:
