@@ -80,7 +80,7 @@ jobs:
         with:
           script: |
             echo ${{ env.TARGET_SPRINT_TITLE }}
-            if [[ -n "${{ env.TARGET_SPRINT_TITLE }}" ]]; then
+            if [[ -z ${{ env.TARGET_SPRINT_TITLE }} ]]; then
               echo "変数 TARGET_SPRINT_TITLE がセットされていません。ワークフローを終了します。"
               exit 1
             fi
