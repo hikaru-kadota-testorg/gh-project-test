@@ -75,7 +75,7 @@ jobs:
             }' -f org=$ORGANIZATION -f repo=$REPOSITORY > issue_data.json
             echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV
       
-      - name: set IS_SPRINT
+      - name: set NO_SPRINT
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
@@ -85,10 +85,10 @@ jobs:
         run: | 
           echo ${{ env.TARGET_SPRINT_TITLE }}
           if [ -z "${{ env.TARGET_SPRINT_TITLE }}" ]; then
-            echo 'IS_SPRINT=false' >> $GITHUB_ENV
+            echo 'NO_SPRINT=true' >> $GITHUB_ENV
             echo "Sprint 無し"
           else
-            echo 'IS_SPRINT=true' >> $GITHUB_ENV
+            echo 'NO_SPRINT=false' >> $GITHUB_ENV
             echo "Sprint 有り"
           fi
           
@@ -101,7 +101,7 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          if (!${{ env.IS_SPRINT }}) {
+          if (${{ env.NO_SPRINT }}) {
             echo "sprintがないため終了します"
             return
             }
