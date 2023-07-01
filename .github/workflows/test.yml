@@ -83,11 +83,21 @@ jobs:
 
         run: |
           if [ -z "${TARGET_SPRINT_TITLE}" ]; then
+            echo 'CONTINUE=true' >> $GITHUB_ENV
             echo "Sprintが設定されていません"
-            exit 1
           else
             echo "Sprintが設定されています"
+            echo 'CONTINUE=false' >> $GITHUB_ENV
           fi
+          
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            if (${{env.CONTINUE}}) {
+              exit 1
+              return
+            }
+          
 
       - name: set IS_MILESTONED
         env:
