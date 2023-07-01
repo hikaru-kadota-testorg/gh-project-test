@@ -56,7 +56,7 @@ jobs:
             
             echo 'TARGET_SPRINT_DURATION='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="sprint").duration' project_data.json) >> $GITHUB_ENV
             echo 'TARGET_SPRINT_STARTDATE='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="sprint").startDate' project_data.json) >> $GITHUB_ENV
-            echo $(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="sprint").title' project_data.json)
+            echo 'TARGET_SPRINT_TITLE='$(jq '.data.organization.projectV2.items.nodes[] | select(.type=="ISSUE").fieldValues.nodes[] | select(.field.name=="sprint").title' project_data.json) >> $GITHUB_ENV
             
           if [ -z "$TARGET_SPRINT_TITLE" ]; then
             echo 'IS_SPRINT=false' >> $GITHUB_ENV
@@ -64,8 +64,8 @@ jobs:
             echo 'IS_SPRINT=true' >> $GITHUB_ENV
           fi
           
-          echo "${{ env.TARGET_SPRINT_TITLE }}"
-
+          echo $TARGET_SPRINT_TITLE
+          
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
               repository(owner: $org, name: $repo) {
@@ -81,7 +81,6 @@ jobs:
                 }
               }
             }' -f org=$ORGANIZATION -f repo=$REPOSITORY > issue_data.json
-
             echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV
       
       - name: set IS_MILESTONED
