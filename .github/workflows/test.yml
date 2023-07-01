@@ -83,10 +83,10 @@ jobs:
 
         run: |
           if [ -z ${{ env.TARGET_SPRINT_TITLE }} ]; then
-            echo "Sprintが設定されています"
-          else
             echo "Sprintが設定されていません"
             exit 1
+          else
+            echo "Sprintが設定されています"
           fi
 
       - name: set IS_MILESTONED
