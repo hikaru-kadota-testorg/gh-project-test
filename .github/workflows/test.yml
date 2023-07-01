@@ -105,6 +105,7 @@ jobs:
           fi
           
       - name: set MILESTONE_DUE_ON
+        if: ${{ env.TARGET_SPRINT_TITLE != '' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
@@ -130,6 +131,7 @@ jobs:
             })
             
       - name: set TARGET_MILESTONE_ID
+        if: ${{ env.TARGET_SPRINT_TITLE != '' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
