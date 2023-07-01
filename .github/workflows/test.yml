@@ -101,7 +101,7 @@ jobs:
 
         run: |
           if (${{ env.NO_SPRINT }}) {
-            echo "sprintがないため終了します"
+            return
             }
           
       - name: set IS_MILESTONED
