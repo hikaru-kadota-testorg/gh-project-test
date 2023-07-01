@@ -100,7 +100,10 @@ jobs:
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
 
-        run: |          
+        run: |
+          
+          echo ${{ env.IS_SPRINT }}
+          
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
               repository(owner: $org, name: $repo) {
