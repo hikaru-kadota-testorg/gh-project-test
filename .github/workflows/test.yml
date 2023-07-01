@@ -93,7 +93,7 @@ jobs:
           fi
 
       - name: set IS_MILESTONED
-        if: ${{env.NO_SPRINT}} == false
+        if: ${{ env.NO_SPRINT == '' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
