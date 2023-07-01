@@ -100,13 +100,7 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          - uses: actions/github-script@v6
-            with:
-              script: |
-                if (${{env.NO_SPRINT}}) {
-                  return
-                }
-                
+          if: (${{env.NO_SPRINT}})               
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
               repository(owner: $org, name: $repo) {
