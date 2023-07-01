@@ -94,7 +94,6 @@ jobs:
         with:
           script: |
             if (${{env.CONTINUE}}) {
-              exit 1
               return
             }
           
