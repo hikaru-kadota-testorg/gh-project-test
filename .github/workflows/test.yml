@@ -85,10 +85,10 @@ jobs:
         run: | 
           echo ${{ env.TARGET_SPRINT_TITLE }}
           if [ -z "${{ env.TARGET_SPRINT_TITLE }}" ]; then
-            echo 'IS_SPRINT=false' >> $GITHUB_ENV
+            echo 'NO_SPRINT=true' >> $GITHUB_ENV
             echo "Sprint 無し"
           else
-            echo 'IS_SPRINT=true' >> $GITHUB_ENV
+            echo 'NO_SPRINT=false' >> $GITHUB_ENV
             echo "Sprint 有り"
           fi
           
@@ -101,12 +101,12 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          if (!${{ env.IS_SPRINT }}) {
+          if (${{ env.NO_SPRINT }}) {
             echo "sprintがないため終了します"
             return
             }
           
-          echo ${{ env.IS_SPRINT }}
+          echo ${{ env.NO_SPRINT }}
           
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
