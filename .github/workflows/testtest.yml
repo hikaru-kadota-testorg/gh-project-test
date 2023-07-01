@@ -10,9 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: output-message-1
-        run: |
-          echo "hogehoge"
+        run: echo "hogehoge"
 
       - name: output-message-2
-        run: |
-          echo "fugafuga"
+        run: echo "fugafuga"
