@@ -83,17 +83,14 @@ jobs:
           REPOSITORY: gh-project-test
         
         run: | 
-          echo ${{ env.TARGET_SPRINT_TITLE }}
           if [ -z "${{ env.TARGET_SPRINT_TITLE }}" ]; then
             echo 'NO_SPRINT=true' >> $GITHUB_ENV
-            echo "Sprint 無し"
           else
             echo 'NO_SPRINT=false' >> $GITHUB_ENV
-            echo "Sprint 有り"
           fi
 
       - name: set IS_MILESTONED
-        if: ${{ env.NO_SPRINT == '' }}
+        if: ${{ env.NO_SPRINT == 'false' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
@@ -122,6 +119,7 @@ jobs:
           fi
           
       - name: set MILESTONE_DUE_ON
+        if: ${{ env.NO_SPRINT == 'false' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
@@ -146,6 +144,7 @@ jobs:
             })
             
       - name: set TARGET_MILESTONE_ID
+        if: ${{ env.NO_SPRINT == 'false' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
@@ -168,6 +167,7 @@ jobs:
           echo 'TARGET_MILESTONE_ID='$(jq '.data.repository.milestones.nodes[] | select(.title==${{env.TARGET_SPRINT_TITLE}}) | .id' milestone_data.json) >> $GITHUB_ENV
       
       - name: set-milestone
+        if: ${{ env.NO_SPRINT == 'false' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
