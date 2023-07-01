@@ -115,6 +115,7 @@ jobs:
           echo 'MILESTONE_DUE_ON='$(jq -n '${{ env.TARGET_SPRINT_STARTDATE}} | strptime("%Y-%m-%d") | .[2] |= .+${{env.TARGET_SPRINT_DURATION}} | mktime | strftime("%Y-%m-%d")') >> $GITHUB_ENV
       
       - uses: actions/github-script@v6
+        if: ${{ env.TARGET_SPRINT_TITLE != '' }}
         with:
           script: |
             if (${{env.IS_MILESTONED}}) {
