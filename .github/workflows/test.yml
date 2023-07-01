@@ -91,17 +91,7 @@ jobs:
             echo 'NO_SPRINT=false' >> $GITHUB_ENV
             echo "Sprint 有り"
           fi
-          
-      - name: hogehoge
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          ORGANIZATION: hikaru-kadota-testorg
-          PROJECT_NUMBER: 1
-          REPOSITORY: gh-project-test
 
-        run: |
-
-          
       - name: set IS_MILESTONED
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
@@ -110,13 +100,13 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            if (${{env.NO_SPRINT}}) {
-              return
-            }
-            
+          - uses: actions/github-script@v6
+            with:
+              script: |
+                if (${{env.NO_SPRINT}}) {
+                  return
+                }
+          run: |
             gh api graphql -f query='
               query($org: String!, $repo: String!) {
                 repository(owner: $org, name: $repo) {
