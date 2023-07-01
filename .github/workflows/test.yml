@@ -1,4 +1,4 @@
-name: test-action
+ame: test-action
 on:
   issues:
     types:
@@ -90,14 +90,6 @@ jobs:
             echo 'CONTINUE=false' >> $GITHUB_ENV
           fi
           
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            if (${{env.CONTINUE}}) {
-              return
-            }
-          
-
       - name: set IS_MILESTONED
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
@@ -106,23 +98,31 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          gh api graphql -f query='
-          query($org: String!, $repo: String!) {
-            repository(owner: $org, name: $repo) {
-              milestones(first: 20) {
-                nodes {
-                  id
-                  title
-                }
-              }
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            if (${{env.CONTINUE}}) {
+              return
             }
-          }' -f org=$ORGANIZATION -f repo=$REPOSITORY > milestone_data.json
-          MILESTONE=$(jq '.data.repository.milestones.nodes[] | select(.title==${{env.TARGET_SPRINT_TITLE}}) | .id' milestone_data.json)
-          if [ -n "$MILESTONE" ]; then
-            echo 'IS_MILESTONED=true' >> $GITHUB_ENV
-          else
-            echo 'IS_MILESTONED=false' >> $GITHUB_ENV
-          fi
+          
+
+            gh api graphql -f query='
+              query($org: String!, $repo: String!) {
+                repository(owner: $org, name: $repo) {
+                  milestones(first: 20) {
+                    nodes {
+                      id
+                     title
+                    }
+                  }
+                }
+              }' -f org=$ORGANIZATION -f repo=$REPOSITORY > milestone_data.json
+             MILESTONE=$(jq '.data.repository.milestones.nodes[] | select(.title==${{env.TARGET_SPRINT_TITLE}}) | .id' milestone_data.json)
+              if [ -n "$MILESTONE" ]; then
+                echo 'IS_MILESTONED=true' >> $GITHUB_ENV
+              else
+                echo 'IS_MILESTONED=false' >> $GITHUB_ENV
+              fi
 
       - name: set MILESTONE_DUE_ON
         env:
