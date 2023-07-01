@@ -92,8 +92,7 @@ jobs:
             echo "Sprint 有り"
           fi
           
-      
-      - name: set IS_MILESTONED
+      - name: hogehoge
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
@@ -106,8 +105,14 @@ jobs:
             return
             }
           
-          echo ${{ env.IS_SPRINT }}
-          
+      - name: set IS_MILESTONED
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          ORGANIZATION: hikaru-kadota-testorg
+          PROJECT_NUMBER: 1
+          REPOSITORY: gh-project-test
+
+        run: |
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
               repository(owner: $org, name: $repo) {
