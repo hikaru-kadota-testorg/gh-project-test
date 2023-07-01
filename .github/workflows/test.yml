@@ -101,13 +101,6 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          if (${{ env.NO_SPRINT }}) {
-            echo "sprintがないため終了します"
-            return
-            }
-          
-          echo ${{ env.NO_SPRINT }}
-          
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
               repository(owner: $org, name: $repo) {
@@ -127,6 +120,13 @@ jobs:
           else
             echo 'IS_MILESTONED=false' >> $GITHUB_ENV
           fi
+          
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            if (${{env.NO_SPRINT}}) {
+              return
+            }
           
       - name: set MILESTONE_DUE_ON
         env:
