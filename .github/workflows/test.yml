@@ -82,7 +82,7 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          if [ -n "${{ env.TARGET_SPRINT_TITLE }}" ]; then
+          if [ -n ${{ env.TARGET_SPRINT_TITLE }} ]; then
             echo "Sprintが設定されています"
           else
             echo "Sprintが設定されていません"
