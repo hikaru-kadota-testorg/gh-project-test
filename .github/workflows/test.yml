@@ -106,26 +106,26 @@ jobs:
                 if (${{env.NO_SPRINT}}) {
                   return
                 }
-          run: |
-            gh api graphql -f query='
-              query($org: String!, $repo: String!) {
-                repository(owner: $org, name: $repo) {
-                  milestones(first: 20) {
-                    nodes {
-                      id
-                      title
-                    }
+                
+          gh api graphql -f query='
+            query($org: String!, $repo: String!) {
+              repository(owner: $org, name: $repo) {
+                milestones(first: 20) {
+                  nodes {
+                    id
+                    title
                   }
                 }
-              }' -f org=$ORGANIZATION -f repo=$REPOSITORY > milestone_data.json
-            
-            MILESTONE=$(jq '.data.repository.milestones.nodes[] | select(.title==${{env.TARGET_SPRINT_TITLE}}) | .id' milestone_data.json)
+              }
+            }' -f org=$ORGANIZATION -f repo=$REPOSITORY > milestone_data.json
           
-            if [ -n "$MILESTONE" ]; then
-              echo 'IS_MILESTONED=true' >> $GITHUB_ENV
-            else
-              echo 'IS_MILESTONED=false' >> $GITHUB_ENV
-            fi
+          MILESTONE=$(jq '.data.repository.milestones.nodes[] | select(.title==${{env.TARGET_SPRINT_TITLE}}) | .id' milestone_data.json)
+          
+          if [ -n "$MILESTONE" ]; then
+            echo 'IS_MILESTONED=true' >> $GITHUB_ENV
+          else
+            echo 'IS_MILESTONED=false' >> $GITHUB_ENV
+          fi
           
       - name: set MILESTONE_DUE_ON
         env:
