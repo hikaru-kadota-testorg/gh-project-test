@@ -84,13 +84,6 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          if [ -z "${{ env.TARGET_SPRINT_TITLE }}" ]; then
-            echo 'IS_SPRINT=false' >> $GITHUB_ENV
-            return
-          else
-            echo 'IS_SPRINT=true' >> $GITHUB_ENV
-          fi
-          
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
               repository(owner: $org, name: $repo) {
@@ -136,6 +129,7 @@ jobs:
             })
             
       - name: set TARGET_MILESTONE_ID
+        if: ${{ success() }}
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
