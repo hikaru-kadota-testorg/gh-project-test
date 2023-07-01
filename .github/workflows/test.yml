@@ -100,7 +100,7 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          if: ${{env.NO_SPRINT}} == 'false'
+          if: ${{env.NO_SPRINT}} == false
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
               repository(owner: $org, name: $repo) {
