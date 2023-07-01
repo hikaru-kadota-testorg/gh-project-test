@@ -104,7 +104,6 @@ jobs:
             if (${{env.CONTINUE}}) {
               return
             }
-          
 
             gh api graphql -f query='
               query($org: String!, $repo: String!) {
@@ -137,7 +136,7 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            if (${{env.IS_MILESTONED}}) {
+            if (${{env.IS_MILESTONED}} || ${{env.CONTINUE}}) {
               return
             }
             const dueOn = new Date(${{env.MILESTONE_DUE_ON}}).toISOString()
