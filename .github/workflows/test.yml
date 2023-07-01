@@ -1,4 +1,4 @@
-ame: test-action
+name: test-action
 on:
   issues:
     types:
