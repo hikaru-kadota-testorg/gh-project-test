@@ -64,7 +64,7 @@ jobs:
             echo 'IS_SPRINT=true' >> $GITHUB_ENV
           fi
           
-          echo "{{ env.$TARGET_SPRINT_TITLE }}"
+          echo "${{ env.TARGET_SPRINT_TITLE }}"
 
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
