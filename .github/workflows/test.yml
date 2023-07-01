@@ -75,6 +75,24 @@ jobs:
             }' -f org=$ORGANIZATION -f repo=$REPOSITORY > issue_data.json
             echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV
       
+      - name: set IS_SPRINT
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          ORGANIZATION: hikaru-kadota-testorg
+          PROJECT_NUMBER: 1
+          REPOSITORY: gh-project-test
+        
+        run: | 
+          echo ${{ env.TARGET_SPRINT_TITLE }}
+          if [ -z "${{ env.TARGET_SPRINT_TITLE }}" ]; then
+            echo 'IS_SPRINT=false' >> $GITHUB_ENV
+            echo "Sprint 無し"
+          else
+            echo 'IS_SPRINT=true' >> $GITHUB_ENV
+            echo "Sprint 有り"
+          fi
+          
+      
       - name: set IS_MILESTONED
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
@@ -82,10 +100,7 @@ jobs:
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
 
-        run: |
-
-          echo ${{ env.TARGET_SPRINT_TITLE }}
-          
+        run: |          
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
               repository(owner: $org, name: $repo) {
