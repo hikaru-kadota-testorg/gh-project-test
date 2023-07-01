@@ -86,6 +86,7 @@ jobs:
             echo "Sprintが設定されています"
           else
             echo "Sprintが設定されていません"
+            exit 1
           fi
 
       - name: set IS_MILESTONED
