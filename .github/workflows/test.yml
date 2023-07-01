@@ -101,7 +101,7 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          if ["${{ env.IS_SPRINT }}" == false]; then
+          if [ !${{ env.IS_SPRINT }} ]; then
             echo "Sprintが設定されていませんので終了します"
             exit 1
           fi
