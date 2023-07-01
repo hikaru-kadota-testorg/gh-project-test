@@ -102,7 +102,7 @@ jobs:
         run: |
           if (${{ env.NO_SPRINT }}) {
             return
-            }
+          }
           
       - name: set IS_MILESTONED
         env:
