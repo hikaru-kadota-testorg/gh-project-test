@@ -3,7 +3,7 @@ name: test
 on:
   issues:
     types:
-      - opened
+      - closeed
 
 jobs:
   message:
