@@ -99,6 +99,7 @@ jobs:
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
 
+        run: |
       - uses: actions/github-script@v6
         with:
           script: |
