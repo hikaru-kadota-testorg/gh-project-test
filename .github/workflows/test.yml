@@ -99,10 +99,12 @@ jobs:
           PROJECT_NUMBER: 1
           REPOSITORY: gh-project-test
 
-        run: |
-          if(${env.NO_SPRINT}) {
-            return
-          }
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            if (${{env.NO_SPRINT}}) {
+              return
+            }
           
       - name: set IS_MILESTONED
         env:
