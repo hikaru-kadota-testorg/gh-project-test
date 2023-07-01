@@ -103,7 +103,7 @@ jobs:
         run: |
           if [ !${{ env.IS_SPRINT }} ]; then
             echo "Sprintが設定されていませんので終了します"
-            exit 1
+             1
           fi
           
           echo ${{ env.IS_SPRINT }}
