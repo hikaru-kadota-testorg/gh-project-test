@@ -100,7 +100,7 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          if (${{ env.NO_SPRINT }}) {
+          if(${env.NO_SPRINT}) {
             return
           }
           
