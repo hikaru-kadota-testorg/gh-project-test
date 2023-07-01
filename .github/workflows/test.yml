@@ -75,22 +75,8 @@ jobs:
             }' -f org=$ORGANIZATION -f repo=$REPOSITORY > issue_data.json
             echo 'TARGET_ISSUE_ID='$(jq '.data.repository.issues.nodes[0].id' issue_data.json) >> $GITHUB_ENV
       
-      - name: set NO_SPRINT
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          ORGANIZATION: hikaru-kadota-testorg
-          PROJECT_NUMBER: 1
-          REPOSITORY: gh-project-test
-        
-        run: | 
-          if [ -z "${{ env.TARGET_SPRINT_TITLE }}" ]; then
-            echo 'NO_SPRINT=true' >> $GITHUB_ENV
-          else
-            echo 'NO_SPRINT=false' >> $GITHUB_ENV
-          fi
-
       - name: set IS_MILESTONED
-        if: ${{ env.NO_SPRINT == 'false' }}
+        if: ${{ env.TARGET_SPRINT_TITLE != '' }}
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           ORGANIZATION: hikaru-kadota-testorg
