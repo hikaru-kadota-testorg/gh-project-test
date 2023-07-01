@@ -64,7 +64,7 @@ jobs:
             echo 'IS_SPRINT=true' >> $GITHUB_ENV
           fi
           
-          echo ${{ env.IS_SPRINT }}
+          echo "${{ env.IS_SPRINT }}"
 
           gh api graphql -f query='
             query($org: String!, $repo: String!) {
