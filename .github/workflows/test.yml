@@ -101,8 +101,9 @@ jobs:
           REPOSITORY: gh-project-test
 
         run: |
-          if (!${{env.IS_SPRINT}}) {
-              return
+          if ( !${{ env.IS_SPRINT }} ) {
+            echo "sprintがないため終了します"
+            return
             }
           
           echo ${{ env.IS_SPRINT }}
